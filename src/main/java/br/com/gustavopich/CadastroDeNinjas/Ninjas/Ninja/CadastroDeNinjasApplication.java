@@ -1,4 +1,4 @@
-package br.com.gustavopich.CadastroDeNinjas;
+package br.com.gustavopich.CadastroDeNinjas.Ninjas.Ninja;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

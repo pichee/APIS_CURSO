@@ -1,17 +1,21 @@
-package br.com.gustavopich.CadastroDeNinjas;
+package br.com.gustavopich.CadastroDeNinjas.Ninjas.Ninja.Ninja;
 
+import br.com.gustavopich.CadastroDeNinjas.Ninjas.Ninja.Missoes.MissaoModel;
 import jakarta.persistence.*;
-
+import java.util.List;
 @Entity
 @Table(name = "tb_cadastro_de_ninjas")
 public class NinjaModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String nome;
-    private int idade;
-    private long id;
-    private String email;
-    private String rank;
+    String nome;
+    int idade;
+    long id;
+    String email;
+    String rank;
+    @ManyToOne
+    @JoinColumn(name = "missoes_id")//Foreign Key
+    private MissaoModel missao;
 
     public NinjaModel(String nome) {
         this.nome = nome;
