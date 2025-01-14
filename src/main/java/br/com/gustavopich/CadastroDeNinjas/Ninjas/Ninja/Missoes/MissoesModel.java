@@ -11,18 +11,24 @@ import lombok.ToString;
 import java.util.List;
 
 @Entity
-@Table(name="tb_missoes")
+@Table (name = "tb_missoes")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class MissaoModel {
+public class MissoesModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
     private String nome;
+
     private String dificuldade;
-    @OneToMany(mappedBy = "missao")
+
+    //@OneToMany - Uma missao pode ter varios ninjas
+    @OneToMany(mappedBy = "missoes")
     @JsonIgnore
     private List<NinjaModel> ninjas;
+
 }

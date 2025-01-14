@@ -1,40 +1,52 @@
 package br.com.gustavopich.CadastroDeNinjas.Ninjas.Ninja.Ninja;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import jakarta.validation.constraints.Null;
 import org.springframework.stereotype.Service;
 
 @Service
 public class NinjaService {
-    private NinjaRepository ninjaRepository;
 
-    public NinjaService(NinjaRepository ninjaRepository) {
+    private final NinjaRepository ninjaRepository;
+    private final NinjaMapper ninjaMapper;
+
+    public NinjaService(NinjaRepository ninjaRepository, NinjaMapper ninjaMapper) {
         this.ninjaRepository = ninjaRepository;
-    }
-    //Lista ninjas
-    public List<NinjaModel> listar(){
-        return (List<NinjaModel>) ninjaRepository.findAll();
-    }
-    //Lista ninjas ID
-    public NinjaModel listarNinjasId(long id){
-        Optional<NinjaModel> ListarporId=ninjaRepository.findById(id);
-        return ListarporId.orElse(null);
-    }
-    //Criar Ninja
-    public NinjaModel createNinja(NinjaModel ninja){
-        return ninjaRepository.save(ninja);
+        this.ninjaMapper = ninjaMapper;
     }
 
-    public void removerNinja(long id){
+    public List<NinjaDTO> listarNinjas() {
+        List<NinjaModel> ninjas = ninjaRepository.findAll();
+        return ninjas.stream()
+                .map(ninjaMapper::map)
+                .collect(Collectors.toList());
+    }
+
+    public NinjaDTO listarNinjasId(Long id) {
+        Optional<NinjaModel> ninjaPorId = ninjaRepository.findById(id);
+        return ninjaPorId.map(ninjaMapper::map).orElse(null);
+    }
+
+    public NinjaDTO criarNinja(NinjaDTO ninjaDTO) {
+        NinjaModel ninja = ninjaMapper.map(ninjaDTO);
+        ninja = ninjaRepository.save(ninja);
+        return ninjaMapper.map(ninja);
+    }
+
+    public void deletarNinjaId(Long id) {
         ninjaRepository.deleteById(id);
     }
 
-    public NinjaModel atualizarNinja(long id,NinjaModel ninjaAtualizado){
-        if (ninjaRepository.existsById(id)){
-            return ninjaRepository.save(ninjaAtualizado);
+    public NinjaDTO atualizarNinjas(Long id, NinjaDTO ninjaDTO) {
+        Optional<NinjaModel> ninjaExistente = ninjaRepository.findById(id);
+        if (ninjaExistente.isPresent()) {
+            NinjaModel ninjaAtualizado = ninjaMapper.map(ninjaDTO);
+            ninjaAtualizado.setId(id);
+            NinjaModel ninjaSalvo = ninjaRepository.save(ninjaAtualizado);
+            return ninjaMapper.map(ninjaSalvo);
         }
-        return null;
+        return ninjaDTO;
     }
 
 
